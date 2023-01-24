@@ -18,6 +18,7 @@ body {
   background: var(--mainWhite);
   font-family: "Lato", sans-serif;
 }
+
 .navbar {
   position: sticky;
   top: 0;
@@ -25,7 +26,7 @@ body {
   width: 100%;
   display: flex;
   align-items: center;
-  background: rgb(231, 226, 221);
+  background: rgb(231, 226, 222);
   z-index: 1;
 }
 .navbar-center {
@@ -35,10 +36,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5rem;
+  padding: 1.5rem;
 }
 .nav-icon {
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 .cart-btn {
   position: relative;
