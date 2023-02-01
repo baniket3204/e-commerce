@@ -12,6 +12,8 @@ const productsDOM = document.querySelector('.products-center');
 
 // cart
 let cart = []
+// buttons
+let buttonsDOM = []
 
 // getting the products
 class Products{
@@ -26,6 +28,7 @@ class Products{
         const image = item.fields.image.fields.file.url;
         return {title , price , id , image};
     })
+    
     return products;
     } catch (error) {
         console.log(error);
@@ -40,8 +43,7 @@ class UI{
     let result = '';
     products.forEach(product => {
     result += 
-    `
-      <article class="product">
+    `  <article class="product">
         <div class="img-container">
           <img src=${product.image} alt="image 1" class="product-img">
           <button class="bag-btn" data-id=${product.id}>
@@ -56,18 +58,51 @@ class UI{
     });
     productsDOM.innerHTML = result;
  }
+
+ getBagButtons(){
+   const buttons = [...document.querySelectorAll(".bag-btn")];
+   buttonsDOM = buttons;
+   buttons.forEach(button =>{
+    let id = button.dataset.id;
+    let inCart = cart.find(item =>item.id === id);
+    if(inCart){
+      button.innerText = "In cart";
+      button.disabled = true;
+    }
+     {
+      button.addEventListener("click" , event =>{
+        event.target.innerText = "in cart";
+        event.target.disabled = true;
+      })
+    }
+   })
+ }
 }
 
 // local storage
 class Storage{
-
+ static saveProducts(products)
+ {
+  localStorage.setItem("products" , JSON.stringify(products));
+ }
+ static getProduct(id){
+  let products = JSON.parse(localStorage.getItem('products'));
+  return products.find(product => product.id === id)
+ }
 }
 
-document.addEventListener("DOMContentLoaded" ,()=>{
+document.addEventListener("DOMContentLoaded" , ()=> {
 
  const ui = new UI();
  const products = new Products();
- products.getProducts().then(products => ui.displayProducts(products));
+ // getting products
+ products.getProducts().then(products =>{ 
+    ui.displayProducts(products);
+    Storage.saveProducts(products);
+ }).then(() =>{
+   ui.getBagButtons();
+ });
+
 
 })
 
