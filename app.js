@@ -147,6 +147,11 @@ class UI{
     clearCartBtn.addEventListener("click" , () => {
       this.clearCart();
     });
+    
+    cartContent.addEventListener("click" , event=>{
+      console.log(event.target);
+    });
+
    }
 
    clearCart(){
