@@ -1,7 +1,7 @@
 // variable declaretion
 
 const cartBtn = document.querySelector('.cart-btn');
-const closeCartBtn = document.querySelector('.close-cart');
+const closeCartBtn = document.querySelector('#close-cart');
 const clearCartBtn = document.querySelector('.clear-cart');
 const cartDOM = document.querySelector('.cart');
 const cartOverlay = document.querySelector('.cart-overlay');
@@ -20,7 +20,9 @@ class Products{
  async getProducts(){
     try {        
     let result =  await fetch('products.json')
+    console.log(result);
     let data =  await result.json();
+    console.log(data)
     let products = data.items;
     products = products.map(item => {
         const {title , price} = item.fields;
@@ -71,6 +73,7 @@ class UI{
     }
      {
       button.addEventListener("click" , event =>{
+        console.log(event.target)
         event.target.innerText = "in cart";
         event.target.disabled = true;
         
@@ -79,6 +82,7 @@ class UI{
         Storage.saveCart(cart);
         this.setCartValues(cart);
         this.addCartItem(cartItem);
+        this.showCart();
         
       })
     }
@@ -112,11 +116,42 @@ class UI{
      <i class="fas fa-chevron-up" data-id = ${item.id}></i>
      <p class="item-amount">${item.amount}</p>
      <i class="fas fa-chevron-down" data-id = ${item.id}></i>
-   </div>;
+   </div>
    `
    cartContent.appendChild(div);
    console.log(cartContent);
  }
+  showCart(){
+    cartOverlay.classList.add("transparentBcg");
+    cartDOM.classList.add("showCart");
+  }
+
+   setupAPP(){
+    cart = Storage.getCart();
+    this.setCartValues(cart);
+    this.populateCart(cart);
+    cartBtn.addEventListener("click" , this.showCart);
+    closeCartBtn.addEventListener("click" , this.hideCart);
+   }
+   
+   populateCart(cart) {
+    cart.forEach(item => this.addCartItem(item));
+   }
+
+   hideCart(){
+    cartOverlay.classList.remove("transparentBcg");
+    cartDOM.classList.remove("showCart");
+   }
+
+   cartLogic(){
+    clearCartBtn.addEventListener("click" , () => {
+      this.clearCart;
+    });
+   }
+
+   clearCart(){
+    console.log("hello world");
+   }
 }
 
 // local storage
@@ -134,18 +169,28 @@ class Storage{
  {
   localStorage.setItem("cart" , JSON.stringify(cart));
  }
+  
+ static getCart()
+ {
+   return localStorage.getItem("cart")?JSON.parse
+   (localStorage.getItem("cart")):[]
+ }
+
 }
 
 document.addEventListener("DOMContentLoaded" , ()=> {
 
  const ui = new UI();
  const products = new Products();
+
+  ui.setupAPP();
  // getting products
  products.getProducts().then(products =>{ 
     ui.displayProducts(products);
     Storage.saveProducts(products);
  }).then(() =>{
    ui.getBagButtons();
+   ui.cartLogic();
  });
 
 
