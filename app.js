@@ -145,12 +145,30 @@ class UI{
 
    cartLogic(){
     clearCartBtn.addEventListener("click" , () => {
-      this.clearCart;
+      this.clearCart();
     });
    }
 
    clearCart(){
-    console.log("hello world");
+    let cartItems = cart.map(item => item.id);
+    cartItems.forEach(id => this.removeItem(id));
+    while(cartContent.children.length > 0){
+      cartContent.removeChild(cartContent.children[0]);
+    }
+    this.hideCart();
+   }
+
+   removeItem(id){
+    cart  = cart.filter(item => item.id!== id);
+    this.setCartValues(cart);
+    Storage.saveCart(cart);
+    let button = this.getSingleButton(id);
+    button.disabled = false;
+    button.innerHTML = `<i class="fas fa shopping-cart"></i>add to cart`;
+   }
+
+   getSingleButton(id){
+    return buttonsDOM.find(button => button.dataset.id === id);
    }
 }
 
@@ -179,7 +197,6 @@ class Storage{
 }
 
 document.addEventListener("DOMContentLoaded" , ()=> {
-
  const ui = new UI();
  const products = new Products();
 
